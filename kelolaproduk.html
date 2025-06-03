@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Produk - Coffee Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-[#8B5E3C] text-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Coffee Shop</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="dashboard.html" class="hover:text-orange-200">Beranda</a></li>
+                    <li><a href="kelolaproduk.html" class="font-semibold underline">Kelola Produk</a></li>
+                    <li><a href="receipt.html" class="hover:text-orange-200">Struk</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800">Kelola Stok Produk</h2>
+            <button onclick="showAddProductModal()" class="bg-[#8B5E3C] hover:bg-orange-900 text-white px-4 py-2 rounded-md flex items-center">
+                <i class="fas fa-plus mr-2"></i> Tambah Produk Baru
+            </button>
+        </div>
+
+        <!-- Product Table -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Produk</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="productTableBody" class="bg-white divide-y divide-gray-200">
+                    <!-- Product data will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Tambah Produk Baru</h3>
+                <button onclick="hideAddProductModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addProductForm" class="space-y-4">
+                <div>
+                    <label for="productName" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                    <input type="text" id="productName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="productPrice" class="block text-sm font-medium text-gray-700">Harga</label>
+                    <input type="number" id="productPrice" min="0" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="productStock" class="block text-sm font-medium text-gray-700">Stok Awal</label>
+                    <input type="number" id="productStock" min="0" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="productImage" class="block text-sm font-medium text-gray-700">URL Gambar</label>
+                    <input type="text" id="productImage" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="hideAddProductModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-[#8B5E3C] text-white rounded-md hover:bg-orange-900">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Stock Modal -->
+    <div id="editStockModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Edit Stok Produk</h3>
+                <button onclick="hideEditStockModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editStockForm" class="space-y-4">
+                <input type="hidden" id="editProductId">
+                <div>
+                    <label for="editProductName" class="block text-sm font-medium text-gray-700">Nama Produk</label>
+                    <input type="text" id="editProductName" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100">
+                </div>
+                <div>
+                    <label for="editStockAction" class="block text-sm font-medium text-gray-700">Aksi</label>
+                    <select id="editStockAction" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                        <option value="add">Tambah Stok</option>
+                        <option value="reduce">Kurangi Stok</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="editStockAmount" class="block text-sm font-medium text-gray-700">Jumlah</label>
+                    <input type="number" id="editStockAmount" min="1" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="hideEditStockModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-[#8B5E3C] text-white rounded-md hover:bg-orange-900">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample product data (in a real app, this would come from a database)
+        let products = [
+            { id: 1, name: "Espresso", price: 3.50, stock: 50, image: "https://www.kohvisemu.ee/app/uploads/2020/08/espresso-2.jpg" },
+            { id: 2, name: "Americano", price: 4.00, stock: 42, image: "https://www.craftcoffeeguru.com/wp-content/uploads/2019/02/americano-9.jpg" },
+            { id: 3, name: "Long Black", price: 4.20, stock: 35, image: "https://th.bing.com/th/id/R.fbed5d177a7b163dc7f894b6a3c141f3?rik=RFzJ%2fDYHhofO1A&riu=http%3a%2f%2fwhitehorsecoffee.com.au%2fcdn%2fshop%2farticles%2funnamed-6.jpg%3fv%3d1680243596&ehk=0GfkhDDlhEkJB%2fid%2f2sjLIzfDA8orCQKoT%2fJTKi3zk0%3d&risl=&pid=ImgRaw&r=0" },
+            { id: 4, name: "Cappuccino", price: 4.80, stock: 38, image: "https://th.bing.com/th/id/OIP.Pe-S01F7qQmyT8Md6QyK_wHaE8?rs=1&pid=ImgDetMain" },
+            { id: 5, name: "Latte", price: 5.00, stock: 45, image: "https://brookrest.com/wp-content/uploads/2020/05/AdobeStock_315919556-scaled.jpeg" },
+            { id: 6, name: "Macchiato", price: 4.60, stock: 30, image: "https://cafeish.co/wp-content/uploads/2022/01/7.png" },
+            { id: 7, name: "Piccolo Latte", price: 3.80, stock: 25, image: "https://dripped.coffee/wp-content/uploads/2022/05/Delicious-Piccolo-Latte-1024x683.jpg" },
+            { id: 8, name: "Moccachino", price: 5.20, stock: 40, image: "https://th.bing.com/th/id/OIP.7cOmKixcnCHEnQEoQULEawHaE7?rs=1&pid=ImgDetMain" },
+            { id: 9, name: "Caramel Macchiato", price: 5.50, stock: 36, image: "https://th.bing.com/th/id/R.1094c1c3d9c066ca99f1a786daf3d647?rik=XcncN81JGmr%2bMQ&riu=http%3a%2f%2fvignette1.wikia.nocookie.net%2fstarbuckscoffee%2fimages%2f1%2f11%2fCaramel_Macchiato.jpg%2frevision%2flatest%3fcb%3d20150103185950&ehk=%2bRX4mDVMmC1UxOG%2bGwOO3NAEEeeHcW4Lf6cxzxa%2fmQE%3d&risl=&pid=ImgRaw&r=0" }
+        ];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderProductTable();
+            
+            // Add product form submission
+            document.getElementById('addProductForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addNewProduct();
+            });
+            
+            // Edit stock form submission
+            document.getElementById('editStockForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateProductStock();
+            });
+        });
+
+        // Render product table
+        function renderProductTable() {
+            const tableBody = document.getElementById('productTableBody');
+            tableBody.innerHTML = '';
+            
+            products.forEach((product, index) => {
+                const row = document.createElement('tr');
+                row.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${index + 1}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <img src="${product.image}" alt="${product.name}" class="h-10 w-10 rounded-full object-cover">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${product.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$${product.price.toFixed(2)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.stock}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="showEditStockModal(${product.id})" class="text-[#8B5E3C] hover:text-orange-900 mr-3">
+                            <i class="fas fa-edit"></i> Edit Stok
+                        </button>
+                        <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Show add product modal
+        function showAddProductModal() {
+            document.getElementById('addProductModal').classList.remove('hidden');
+        }
+
+        // Hide add product modal
+        function hideAddProductModal() {
+            document.getElementById('addProductModal').classList.add('hidden');
+            document.getElementById('addProductForm').reset();
+        }
+
+        // Add new product
+        function addNewProduct() {
+            const name = document.getElementById('productName').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+            const image = document.getElementById('productImage').value;
+            
+            const newProduct = {
+                id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
+                name,
+                price,
+                stock,
+                image
+            };
+            
+            products.push(newProduct);
+            renderProductTable();
+            hideAddProductModal();
+            
+            // Show success message
+            alert('Produk berhasil ditambahkan!');
+        }
+
+        // Show edit stock modal
+        function showEditStockModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            document.getElementById('editProductId').value = product.id;
+            document.getElementById('editProductName').value = product.name;
+            document.getElementById('editStockAmount').value = '';
+            
+            document.getElementById('editStockModal').classList.remove('hidden');
+        }
+
+        // Hide edit stock modal
+        function hideEditStockModal() {
+            document.getElementById('editStockModal').classList.add('hidden');
+            document.getElementById('editStockForm').reset();
+        }
+
+        // Update product stock
+        function updateProductStock() {
+            const productId = parseInt(document.getElementById('editProductId').value);
+            const action = document.getElementById('editStockAction').value;
+            const amount = parseInt(document.getElementById('editStockAmount').value);
+            
+            const productIndex = products.findIndex(p => p.id === productId);
+            if (productIndex === -1) return;
+            
+            if (action === 'add') {
+                products[productIndex].stock += amount;
+            } else {
+                if (products[productIndex].stock < amount) {
+                    alert('Stok tidak mencukupi!');
+                    return;
+                }
+                products[productIndex].stock -= amount;
+            }
+            
+            renderProductTable();
+            hideEditStockModal();
+            
+            // Show success message
+            alert('Stok produk berhasil diperbarui!');
+        }
+
+        // Delete product
+        function deleteProduct(productId) {
+            if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+                products = products.filter(p => p.id !== productId);
+                renderProductTable();
+                alert('Produk berhasil dihapus!');
+            }
+        }
+    </script>
+</body>
+</html>

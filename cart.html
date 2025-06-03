@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #8B5E3C;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<!-- Section 1 -->
+<section class="w-full px-4 sm:px-8 text-gray-700 bg-white">
+    <div class="container flex flex-col flex-wrap items-center justify-between py-5 mx-auto md:flex-row max-w-7xl">
+        <!-- Logo and Hamburger Menu -->
+        <div class="flex items-center justify-between w-full md:w-auto">
+            <a href="#_" class="flex items-center font-medium text-gray-900 lg:w-auto lg:items-center lg:justify-center">
+                <span class="text-xl font-black leading-none text-gray-900 select-none">AiCoffee<span class="text-indigo-600">.</span></span>
+            </a>
+            
+            <!-- Mobile menu button and logout button container -->
+            <div class="flex items-center space-x-2 md:space-x-4">
+                <!-- Logout Button - Visible on mobile -->
+                <button id="logoutBtnMobile" class="md:hidden inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium leading-5 text-white whitespace-no-wrap bg-[#8B5E3C] border border-transparent rounded-md shadow-sm hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 transition duration-150 ease-in-out">
+                    Logout
+                </button>
+                
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden focus:outline-none p-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Links - Hidden on mobile by default -->
+        <div id="mobile-menu" class="hidden w-auto md:flex md:items-center">
+            <nav class="flex flex-col w-auto py-2 space-y-1 text-base bg-white border border-gray-200 rounded-lg shadow-md absolute right-8 top-16 z-50 md:space-y-0 md:py-0 md:flex-row md:items-center md:space-x-6 md:ml-8 md:relative md:right-auto md:top-auto md:border-0 md:shadow-none md:bg-transparent">
+                <a href="dashboard.html" class="px-4 py-2 font-medium leading-6 text-gray-600 hover:text-gray-900 hover:bg-gray-50">Home</a>
+                <a href="#menuSection" class="px-4 py-2 font-medium leading-6 text-gray-600 hover:text-gray-900 hover:bg-gray-50">Menu</a>
+                <a href="cart.html" class="px-4 py-2 font-medium leading-6 text-gray-600 hover:text-gray-900 hover:bg-gray-50 relative">
+                    Keranjang
+                    <span id="cartCounter" class="cart-count hidden">0</span>
+                </a>
+                <a href="payment.html" class="px-4 py-2 font-medium leading-6 text-gray-600 hover:text-gray-900 hover:bg-gray-50">Pembayaran</a>
+            </nav>
+        </div>
+
+        <!-- Logout Button - Hidden on mobile -->
+        <div class="hidden md:inline-flex items-center ml-5 space-x-6 lg:justify-end">
+            <button id="logoutBtn" class="inline-flex items-center justify-center px-4 py-2 text-base font-medium leading-6 text-white whitespace-no-wrap bg-[#8B5E3C] border border-transparent rounded-md shadow-sm hover:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 transition duration-150 ease-in-out">
+                Logout
+            </button>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Toggle mobile menu
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+    });
+    
+    // Make both logout buttons work the same
+    const logoutFunction = function() {
+        // Your logout functionality here
+        console.log('Logout clicked');
+    };
+    
+    document.getElementById('logoutBtnMobile').addEventListener('click', logoutFunction);
+    document.getElementById('logoutBtn').addEventListener('click', logoutFunction);
+</script>
+
+<!-- Keranjang Section -->
+<section class="py-12 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Keranjang Belanja</h1>
+        
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Daftar Item -->
+            <div class="lg:w-2/3">
+                <div id="cartItems" class="bg-white rounded-lg shadow-md p-6">
+                    <!-- Item akan dimasukkan di sini oleh JavaScript -->
+                    <div class="text-center py-8" id="emptyCartMessage">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <h3 class="text-xl font-medium text-gray-600 mt-4">Keranjang Anda kosong</h3>
+                        <p class="text-gray-500 mt-2">Mulai belanja untuk menambahkan item ke keranjang</p>
+                        <a href="dashboard.html#menuSection" class="mt-4 inline-block px-6 py-2 bg-[#8B5E3C] text-white rounded-md hover:bg-orange-900">
+                            Lihat Menu
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ringkasan Belanja -->
+            <div class="lg:w-1/3">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Ringkasan Belanja</h2>
+                    
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray-600">Subtotal</span>
+                        <span id="subtotal" class="text-gray-900 font-medium">$0.00</span>
+                    </div>
+                    
+                    <div class="flex justify-between mb-4">
+                        <span class="text-gray-600">Pajak (10%)</span>
+                        <span id="tax" class="text-gray-900 font-medium">$0.00</span>
+                    </div>
+                    
+                    <div class="border-t border-gray-200 pt-4 mb-6">
+                        <div class="flex justify-between">
+                            <span class="text-lg font-bold text-gray-900">Total</span>
+                            <span id="total" class="text-lg font-bold text-gray-900">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <button id="checkoutBtn" onclick="window.location.href='payment.html'" class="w-full bg-[#8B5E3C] text-white py-3 rounded-md hover:bg-orange-900 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Lanjut ke Pembayaran
+                    </button>
+                    
+                    <p class="text-sm text-gray-500 mt-4 text-center">
+                        atau <a href="dashboard.html#menuSection" class="text-[#8B5E3C] hover:text-orange-900">lanjutkan belanja</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<div class="bg-gray-100">
+    <div class="max-w-screen-lg px-4 sm:px-6 text-gray-800 sm:grid md:grid-cols-4 sm:grid-cols-2 mx-auto">
+        <div class="p-5">
+            <h3 class="font-bold text-xl text-indigo-600">AiCoffee</h3>
+        </div>
+        <div class="p-5">
+            <div class="text-sm uppercase text-indigo-600 font-bold">Kelola</div>
+            <a class="my-3 block" href="kelolauser.html">Pengguna</a>
+            <a class="my-3 block" href="kelolaproduk.html">Produk</a>
+            <a class="my-3 block" href="kelolaartikel.html">Artikel</a>
+        </div>
+        <div class="p-5">
+            <div class="text-sm uppercase text-indigo-600 font-bold">Support</div>
+            <a class="my-3 block" href="/#">Bantuan</a>
+            <a class="my-3 block" href="/#">Kebijakan Privasi</a>
+            <a class="my-3 block" href="/#">Syarat & Ketentuan</a>
+        </div>
+        <div class="p-5">
+            <div class="text-sm uppercase text-indigo-600 font-bold">Hubungi Kami</div>
+            <a class="my-3 block" href="/#">Tito Muhammad Gafa</a>
+            <a class="my-3 block" href="/#">titomuhammadgafa330@gmail.com</a>
+        </div>
+    </div>
+</div>
+
+<div class="bg-gray-100 pt-2">
+    <div class="flex pb-5 px-3 m-auto pt-5 border-t text-gray-800 text-sm flex-col max-w-screen-lg items-center">
+        <div class="md:flex-auto md:flex-row-reverse mt-2 flex-row flex">
+            <a href="/#" class="w-6 mx-1">
+                <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                    viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                    style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                    <path id="Twitter" d="M24,12c0,6.627 -5.373,12 -12,12c-6.627,0 -12,-5.373 -12,-12c0,-6.627
+                  5.373,-12 12,-12c6.627,0 12,5.373 12,12Zm-6.465,-3.192c-0.379,0.168
+                  -0.786,0.281 -1.213,0.333c0.436,-0.262 0.771,-0.676
+                  0.929,-1.169c-0.408,0.242 -0.86,0.418 -1.341,0.513c-0.385,-0.411
+                  -0.934,-0.667 -1.541,-0.667c-1.167,0 -2.112,0.945 -2.112,2.111c0,0.166
+                  0.018,0.327 0.054,0.482c-1.754,-0.088 -3.31,-0.929
+                  -4.352,-2.206c-0.181,0.311 -0.286,0.674 -0.286,1.061c0,0.733 0.373,1.379
+                  0.94,1.757c-0.346,-0.01 -0.672,-0.106 -0.956,-0.264c-0.001,0.009
+                  -0.001,0.018 -0.001,0.027c0,1.023 0.728,1.877 1.694,2.07c-0.177,0.049
+                  -0.364,0.075 -0.556,0.075c-0.137,0 -0.269,-0.014 -0.397,-0.038c0.268,0.838
+                  1.048,1.449 1.972,1.466c-0.723,0.566 -1.633,0.904 -2.622,0.904c-0.171,0
+                  -0.339,-0.01 -0.504,-0.03c0.934,0.599 2.044,0.949 3.237,0.949c3.883,0
+                  6.007,-3.217 6.007,-6.008c0,-0.091 -0.002,-0.183 -0.006,-0.273c0.413,-0.298
+                  0.771,-0.67 1.054,-1.093Z"></path>
+                </svg>
+            </a>
+            <a href="/#" class="w-6 mx-1">
+                <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                    viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                    style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                    <path id="Facebook" d="M24,12c0,6.627 -5.373,12 -12,12c-6.627,0 -12,-5.373 -12,-12c0,-6.627
+                  5.373,-12 12,-12c6.627,0 12,5.373
+                  12,12Zm-11.278,0l1.294,0l0.172,-1.617l-1.466,0l0.002,-0.808c0,-0.422
+                  0.04,-0.648 0.646,-0.648l0.809,0l0,-1.616l-1.295,0c-1.555,0 -2.103,0.784
+                  -2.103,2.102l0,0.97l-0.969,0l0,1.617l0.969,0l0,4.689l1.941,0l0,-4.689Z"></path>
+                </svg>
+            </a>
+            <a href="/#" class="w-6 mx-1">
+                <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                    viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                    style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                    <g id="Layer_1">
+                        <circle id="Oval" cx="12" cy="12" r="12"></circle>
+                        <path id="Shape" d="M19.05,8.362c0,-0.062 0,-0.125 -0.063,-0.187l0,-0.063c-0.187,-0.562
+                     -0.687,-0.937 -1.312,-0.937l0.125,0c0,0 -2.438,-0.375 -5.75,-0.375c-3.25,0
+                     -5.75,0.375 -5.75,0.375l0.125,0c-0.625,0 -1.125,0.375
+                     -1.313,0.937l0,0.063c0,0.062 0,0.125 -0.062,0.187c-0.063,0.625 -0.25,1.938
+                     -0.25,3.438c0,1.5 0.187,2.812 0.25,3.437c0,0.063 0,0.125
+                     0.062,0.188l0,0.062c0.188,0.563 0.688,0.938 1.313,0.938l-0.125,0c0,0
+                     2.437,0.375 5.75,0.375c3.25,0 5.75,-0.375 5.75,-0.375l-0.125,0c0.625,0
+                     1.125,-0.375 1.312,-0.938l0,-0.062c0,-0.063 0,-0.125
+                     0.063,-0.188c0.062,-0.625 0.25,-1.937 0.25,-3.437c0,-1.5 -0.125,-2.813
+                     -0.25,-3.438Zm-4.634,3.927l-3.201,2.315c-0.068,0.068 -0.137,0.068
+                     -0.205,0.068c-0.068,0 -0.136,0 -0.204,-0.068c-0.136,-0.068 -0.204,-0.204
+                     -0.204,-0.34l0,-4.631c0,-0.136 0.068,-0.273 0.204,-0.341c0.136,-0.068
+                     0.272,-0.068 0.409,0l3.201,2.316c0.068,0.068 0.136,0.204
+                     0.136,0.34c0.068,0.136 0,0.273 -0.136,0.341Z" style="fill: rgb(255, 255, 255);"></path>
+                    </g>
+                </svg>
+            </a>
+            <a href="/#" class="w-6 mx-1">
+                <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                    viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                    style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                    <path id="Shape" d="M7.3,0.9c1.5,-0.6 3.1,-0.9 4.7,-0.9c1.6,0 3.2,0.3 4.7,0.9c1.5,0.6 2.8,1.5
+                  3.8,2.6c1,1.1 1.9,2.3 2.6,3.8c0.7,1.5 0.9,3 0.9,4.7c0,1.7 -0.3,3.2
+                  -0.9,4.7c-0.6,1.5 -1.5,2.8 -2.6,3.8c-1.1,1 -2.3,1.9 -3.8,2.6c-1.5,0.7
+                  -3.1,0.9 -4.7,0.9c-1.6,0 -3.2,-0.3 -4.7,-0.9c-1.5,-0.6 -2.8,-1.5
+                  -3.8,-2.6c-1,-1.1 -1.9,-2.3 -2.6,-3.8c-0.7,-1.5 -0.9,-3.1 -0.9,-4.7c0,-1.6
+                  0.3,-3.2 0.9,-4.7c0.6,-1.5 1.5,-2.8 2.6,-3.8c1.1,-1 2.3,-1.9
+                  3.8,-2.6Zm-0.3,7.1c0.6,0 1.1,-0.2 1.5,-0.5c0.4,-0.3 0.5,-0.8 0.5,-1.3c0,-0.5
+                  -0.2,-0.9 -0.6,-1.2c-0.4,-0.3 -0.8,-0.5 -1.4,-0.5c-0.6,0 -1.1,0.2
+                  -1.4,0.5c-0.3,0.3 -0.6,0.7 -0.6,1.2c0,0.5 0.2,0.9 0.5,1.3c0.3,0.4 0.9,0.5
+                  1.5,0.5Zm1.5,10l0,-8.5l-3,0l0,8.5l3,0Zm11,0l0,-4.5c0,-1.4 -0.3,-2.5
+                  -0.9,-3.3c-0.6,-0.8 -1.5,-1.2 -2.6,-1.2c-0.6,0 -1.1,0.2 -1.5,0.5c-0.4,0.3
+                  -0.8,0.8 -0.9,1.3l-0.1,-1.3l-3,0l0.1,2l0,6.5l3,0l0,-4.5c0,-0.6 0.1,-1.1
+                  0.4,-1.5c0.3,-0.4 0.6,-0.5 1.1,-0.5c0.5,0 0.9,0.2 1.1,0.5c0.2,0.3 0.4,0.8
+                  0.4,1.5l0,4.5l2.9,0Z"></path>
+                </svg>
+            </a>
+            <a href="/#" class="w-6 mx-1">
+                <svg class="fill-current cursor-pointer text-gray-500 hover:text-indigo-600" width="100%" height="100%"
+                    viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/"
+                    style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2;">
+                    <path id="Combined-Shape" d="M12,24c6.627,0 12,-5.373 12,-12c0,-6.627 -5.373,-12 -12,-12c-6.627,0
+                  -12,5.373 -12,12c0,6.627 5.373,12 12,12Zm6.591,-15.556l-0.722,0c-0.189,0
+                  -0.681,0.208 -0.681,0.385l0,6.422c0,0.178 0.492,0.323
+                  0.681,0.323l0.722,0l0,1.426l-4.675,0l0,-1.426l0.935,0l0,-6.655l-0.163,0l-2.251,8.081l-1.742,0l-2.222,-8.081l-0.168,0l0,6.655l0.935,0l0,1.426l-3.74,0l0,-1.426l0.519,0c0.203,0
+                  0.416,-0.145 0.416,-0.323l0,-6.422c0,-0.177 -0.213,-0.385
+                  -0.416,-0.385l-0.519,0l0,-1.426l4.847,0l1.583,5.704l0.042,0l1.598,-5.704l5.021,0l0,1.426Z"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="my-5">© Copyright 2023. Kopi AI. All Rights Reserved.</div>
+    </div>
+</div>
+
+<script>
+    // Fungsi untuk memformat angka menjadi format mata uang
+    function formatCurrency(amount) {
+        return '$' + amount.toFixed(2);
+    }
+
+    // Fungsi untuk menampilkan item keranjang
+    function displayCartItems() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartItemsContainer = document.getElementById('cartItems');
+        const emptyCartMessage = document.getElementById('emptyCartMessage');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        
+        if (cart.length === 0) {
+            emptyCartMessage.classList.remove('hidden');
+            checkoutBtn.disabled = true;
+            return;
+        } else {
+            emptyCartMessage.classList.add('hidden');
+            checkoutBtn.disabled = false;
+        }
+        
+        let subtotal = 0;
+        let html = '';
+        
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            subtotal += itemTotal;
+            
+            html += `
+                <div class="flex flex-col sm:flex-row gap-4 py-6 border-b border-gray-200" data-index="${index}">
+                    <div class="flex-shrink-0">
+                        <img src="${item.image}" alt="${item.name}" class="w-24 h-24 rounded-md object-cover">
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between">
+                            <h3 class="text-lg font-medium text-gray-900">${item.name}</h3>
+                            <p class="text-lg font-medium text-gray-900">${formatCurrency(itemTotal)}</p>
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500">${formatCurrency(item.price)} per item</p>
+                        <div class="mt-4 flex items-center">
+                            <button onclick="updateQuantity(${index}, -1)" class="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300">
+                                -
+                            </button>
+                            <span class="mx-3 text-gray-900">${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)" class="px-3 py-1 bg-gray-200 rounded-md hover:bg-gray-300">
+                                +
+                            </button>
+                            <button onclick="removeItem(${index})" class="ml-4 text-sm text-red-600 hover:text-red-800">
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        cartItemsContainer.innerHTML = html;
+        updateSummary(subtotal);
+        updateCartCounter();
+    }
+
+    // Fungsi untuk mengupdate ringkasan belanja
+    function updateSummary(subtotal) {
+        const tax = subtotal * 0.1; // Pajak 10%
+        const total = subtotal + tax;
+        
+        document.getElementById('subtotal').textContent = formatCurrency(subtotal);
+        document.getElementById('tax').textContent = formatCurrency(tax);
+        document.getElementById('total').textContent = formatCurrency(total);
+    }
+
+    // Fungsi untuk mengupdate quantity item
+    function updateQuantity(index, change) {
+        const cart = JSON.parse(localStorage.getItem('cart'));
+        
+        cart[index].quantity += change;
+        
+        // Jika quantity <= 0, hapus item
+        if (cart[index].quantity <= 0) {
+            cart.splice(index, 1);
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        displayCartItems();
+    }
+
+    // Fungsi untuk menghapus item
+    function removeItem(index) {
+        const cart = JSON.parse(localStorage.getItem('cart'));
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        displayCartItems();
+    }
+
+    // Fungsi untuk update counter keranjang
+    function updateCartCounter() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+        const counterElement = document.getElementById('cartCounter');
+        
+        if (totalItems > 0) {
+            counterElement.textContent = totalItems;
+            counterElement.classList.remove('hidden');
+        } else {
+            counterElement.classList.add('hidden');
+        }
+    }
+
+    // Tampilkan item keranjang saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', displayCartItems);
+</script>
+
+</body>
+</html>

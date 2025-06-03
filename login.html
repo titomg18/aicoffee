@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="auth.js" defer></script>
+    <style>
+        .coffee-bg {
+            background-color: #f5f0e6; /* Warna cream kopi */
+        }
+        .coffee-border {
+            border-color: #8B5E3C; /* Warna coklat kopi */
+        }
+        .coffee-text {
+            color: #8B5E3C;
+        }
+        .coffee-btn {
+            background-color: #8B5E3C;
+            transition: all 0.3s ease;
+        }
+        .coffee-btn:hover {
+            background-color: #6F4E37; /* Warna coklat lebih tua */
+        }
+    </style>
+</head>
+<body class="coffee-bg min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-sm">
+        <!-- Logo Kopi -->
+        <div class="flex justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 coffee-text" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.8 11.2H6.2m11.6 0c.995 0 1.8.805 1.8 1.8v1.2a3.6 3.6 0 01-3.6 3.6H6.6A3.6 3.6 0 013 14.2V13c0-.995.805-1.8 1.8-1.8m11.6 0V6.4a1.6 1.6 0 00-1.6-1.6H8.4a1.6 1.6 0 00-1.6 1.6v4.8m0 0H6.2" />
+            </svg>
+        </div>
+        
+        <!-- Card Login -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden border coffee-border">
+            <div class="p-8">
+                <h1 class="text-2xl font-bold text-center mb-6 coffee-text">Welcome to AiCoffee</h1>
+                
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="userId" class="block text-sm font-medium coffee-text mb-1">User ID</label>
+                        <input type="text" id="userId" name="userId" 
+                               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-coffee-500 coffee-border"
+                               placeholder="Your username" required>
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium coffee-text mb-1">Password</label>
+                        <input type="password" id="password" name="password" 
+                               class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-coffee-500 coffee-border"
+                               placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox" class="h-4 w-4 coffee-border focus:ring-coffee-500">
+                            <label for="remember" class="ml-2 block text-sm coffee-text">Remember me</label>
+                        </div>
+                        <a href="#" class="text-sm coffee-text hover:underline">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full py-2 px-4 rounded-md text-white font-medium coffee-btn focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-coffee-500">
+                        Sign In
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-sm coffee-text">Don't have an account? 
+                        <a href="register.html" class="font-medium hover:underline">Brew one now</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer kecil -->
+        <div class="mt-6 text-center">
+            <p class="text-xs coffee-text">© 2023 CoffeeSpace. Enjoy your brew.</p>
+        </div>
+    </div>
+</body>
+</html>

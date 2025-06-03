@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struk Pembayaran - Kopi AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .receipt-container, .receipt-container * {
+                visibility: visible;
+            }
+            .receipt-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        .receipt-container {
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+        }
+        .divider {
+            border-top: 1px dashed #000;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-8 px-4">
+        <div class="bg-white rounded-lg shadow-md p-6 max-w-md mx-auto">
+            <h1 class="text-2xl font-bold text-center mb-6">Struk Pembayaran</h1>
+            
+            <div id="receiptContainer" class="receipt-container">
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold">AiCoffee</h2>
+                    <p class="text-sm">Jl. Sembarang sak karepmu</p>
+                    <p class="text-sm">Telp: (021) 1234-5678</p>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="mb-2">
+                    <p class="text-sm">No. Transaksi: <span id="receiptId" class="font-bold">TRX-${Date.now()}</span></p>
+                    <p class="text-sm">Tanggal: <span id="receiptDate">${new Date().toLocaleDateString('id-ID')} ${new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}</span></p>
+                    <p class="text-sm">Kasir: <span id="receiptCashier">Tito</span></p>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div id="receiptItems" class="mb-2">
+                    <!-- Item akan dimasukkan oleh JavaScript -->
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="mb-2">
+                    <div class="flex justify-between">
+                        <span>Subtotal:</span>
+                        <span id="receiptSubtotal">$0.00</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Pajak (10%):</span>
+                        <span id="receiptTax">$0.00</span>
+                    </div>
+                    <div class="flex justify-between font-bold">
+                        <span>TOTAL:</span>
+                        <span id="receiptTotal">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="mb-2">
+                    <p class="text-sm">Metode Pembayaran: <span id="receiptMethod" class="font-bold">${localStorage.getItem('lastPaymentMethod') || 'Cash'}</span></p>
+                    <p class="text-sm">Status: <span id="receiptStatus" class="font-bold text-green-600">LUNAS</span></p>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="text-center mt-4">
+                    <p class="text-xs">Terima kasih telah berbelanja</p>
+                    <p class="text-xs">Barang yang sudah dibeli tidak dapat dikembalikan</p>
+                </div>
+            </div>
+            
+            <div class="mt-6 text-center no-print">
+                <button onclick="window.print()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mr-2">
+                    Cetak Struk
+                </button>
+                <button onclick="window.location.href='dashboard.html'" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600">
+                    Kembali ke Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Format mata uang
+        function formatCurrency(amount) {
+            return '$' + amount.toFixed(2);
+        }
+
+        // Fungsi untuk memuat struk dari localStorage
+        function loadReceiptFromLocalStorage() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const paymentMethod = localStorage.getItem('lastPaymentMethod') || 'Cash';
+            
+            // Hitung total
+            let subtotal = 0;
+            let itemsHtml = '';
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                itemsHtml += `
+                    <div class="flex justify-between text-sm">
+                        <span>${item.name} x${item.quantity}</span>
+                        <span>${formatCurrency(itemTotal)}</span>
+                    </div>
+                `;
+            });
+            
+            const tax = subtotal * 0.1;
+            const total = subtotal + tax;
+            
+            // Isi data struk
+            document.getElementById('receiptItems').innerHTML = itemsHtml;
+            document.getElementById('receiptSubtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('receiptTax').textContent = formatCurrency(tax);
+            document.getElementById('receiptTotal').textContent = formatCurrency(total);
+            document.getElementById('receiptMethod').textContent = paymentMethod;
+            
+            // Kosongkan keranjang setelah mencetak struk
+            localStorage.setItem('cart', JSON.stringify([]));
+        }
+
+        // Muat struk saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadReceiptFromLocalStorage);
+    </script>
+</body>
+</html>
