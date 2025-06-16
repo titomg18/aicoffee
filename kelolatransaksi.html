@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Transaksi - Coffee Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-[#8B5E3C] text-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold mb-4 md:mb-0">Coffee Shop</h1>
+            <nav>
+                <ul class="flex flex-wrap justify-center space-x-2 md:space-x-6">
+                    <li><a href="dashboard.html" class="hover:text-orange-200 px-2 py-1 md:px-0 md:py-0">Beranda</a></li>
+                    <li><a href="kelolatransaksi.html" class="font-semibold underline px-2 py-1 md:px-0 md:py-0">Kelola Transaksi</a></li>
+                    <li><a href="receipt.html" class="hover:text-orange-200 px-2 py-1 md:px-0 md:py-0">Struk</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Daftar Transaksi</h2>
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <div class="relative">
+                    <input type="text" id="searchTransaction" placeholder="Cari transaksi..." class="pl-10 pr-4 py-2 border rounded-md w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <select id="filterStatus" class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#8B5E3C] w-full md:w-auto">
+                    <option value="all">Semua Status</option>
+                    <option value="completed">Selesai</option>
+                    <option value="pending">Pending</option>
+                    <option value="cancelled">Dibatalkan</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Transaction Table -->
+        <div class="bg-white rounded-lg shadow overflow-hidden overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Transaksi</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pelanggan</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTableBody" class="bg-white divide-y divide-gray-200">
+                    <!-- Transaction data will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-4">
+            <div class="text-sm text-gray-500">
+                Menampilkan <span id="startItem">1</span> - <span id="endItem">5</span> dari <span id="totalItems">12</span> transaksi
+            </div>
+            <div class="flex space-x-2">
+                <button id="prevPage" class="px-3 py-1 border rounded-md bg-gray-100 text-gray-700 disabled:opacity-50">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="nextPage" class="px-3 py-1 border rounded-md bg-gray-100 text-gray-700 disabled:opacity-50">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Transaction Detail Modal -->
+    <div id="transactionDetailModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl mx-2 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800">Detail Transaksi</h3>
+                <button onclick="hideTransactionDetailModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <h4 class="font-semibold text-gray-700">Informasi Transaksi</h4>
+                    <div class="mt-2 space-y-1">
+                        <p><span class="text-gray-600">ID:</span> <span id="detailId" class="font-medium">TRX-20230615-001</span></p>
+                        <p><span class="text-gray-600">Tanggal:</span> <span id="detailDate">15 Juni 2023, 10:30</span></p>
+                        <p><span class="text-gray-600">Kasir:</span> <span id="detailCashier">John Doe</span></p>
+                        <p><span class="text-gray-600">Status:</span> <span id="detailStatus" class="px-2 py-1 text-xs rounded-full"></span></p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700">Informasi Pelanggan</h4>
+                    <div class="mt-2 space-y-1">
+                        <p><span class="text-gray-600">Nama:</span> <span id="detailCustomer">Customer 1</span></p>
+                        <p><span class="text-gray-600">Kontak:</span> <span id="detailContact">08123456789</span></p>
+                        <p><span class="text-gray-600">Catatan:</span> <span id="detailNotes" class="italic">-</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <h4 class="font-semibold text-gray-700 mb-2">Items Pesanan</h4>
+            <div class="border rounded-md overflow-hidden mb-4">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
+                            <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionItemsBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Items will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="flex justify-end">
+                <div class="text-right space-y-2">
+                    <p><span class="text-gray-600">Subtotal:</span> <span id="detailSubtotal" class="font-medium">$0.00</span></p>
+                    <p><span class="text-gray-600">Pajak (10%):</span> <span id="detailTax" class="font-medium">$0.00</span></p>
+                    <p><span class="text-gray-600">Diskon:</span> <span id="detailDiscount" class="font-medium">$0.00</span></p>
+                    <p class="text-lg"><span class="text-gray-700">Total:</span> <span id="detailTotal" class="font-bold">$0.00</span></p>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3 mt-6">
+                <button onclick="hideTransactionDetailModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Tutup</button>
+                <button id="printReceiptBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    <i class="fas fa-print mr-2"></i> Cetak Struk
+                </button>
+                <button id="completeTransactionBtn" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 hidden">
+                    <i class="fas fa-check mr-2"></i> Selesaikan
+                </button>
+                <button id="cancelTransactionBtn" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 hidden">
+                    <i class="fas fa-times mr-2"></i> Batalkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample transaction data
+        let transactions = [
+            {
+                id: "TRX-20230615-001",
+                date: "2023-06-15T10:30:00",
+                customer: "Customer 1",
+                contact: "08123456789",
+                cashier: "John Doe",
+                items: [
+                    { productId: 1, name: "Espresso", price: 3.50, quantity: 2 },
+                    { productId: 4, name: "Cappuccino", price: 4.80, quantity: 1 }
+                ],
+                subtotal: 11.80,
+                tax: 1.18,
+                discount: 0.50,
+                total: 12.48,
+                status: "completed",
+                notes: "Meja 3"
+            },
+            {
+                id: "TRX-20230615-002",
+                date: "2023-06-15T11:15:00",
+                customer: "Customer 2",
+                contact: "08234567890",
+                cashier: "Jane Smith",
+                items: [
+                    { productId: 2, name: "Americano", price: 4.00, quantity: 1 },
+                    { productId: 5, name: "Latte", price: 5.00, quantity: 2 },
+                    { productId: 9, name: "Caramel Macchiato", price: 5.50, quantity: 1 }
+                ],
+                subtotal: 19.50,
+                tax: 1.95,
+                discount: 0,
+                total: 21.45,
+                status: "completed",
+                notes: "Bawa pulang"
+            },
+            {
+                id: "TRX-20230615-003",
+                date: "2023-06-15T12:30:00",
+                customer: "Customer 3",
+                contact: "08345678901",
+                cashier: "John Doe",
+                items: [
+                    { productId: 3, name: "Long Black", price: 4.20, quantity: 1 },
+                    { productId: 6, name: "Macchiato", price: 4.60, quantity: 1 }
+                ],
+                subtotal: 8.80,
+                tax: 0.88,
+                discount: 0,
+                total: 9.68,
+                status: "pending",
+                notes: "Tunggu di tempat"
+            },
+            {
+                id: "TRX-20230616-001",
+                date: "2023-06-16T09:45:00",
+                customer: "Customer 4",
+                contact: "08456789012",
+                cashier: "Jane Smith",
+                items: [
+                    { productId: 7, name: "Piccolo Latte", price: 3.80, quantity: 3 },
+                    { productId: 8, name: "Moccachino", price: 5.20, quantity: 1 }
+                ],
+                subtotal: 16.60,
+                tax: 1.66,
+                discount: 2.00,
+                total: 16.26,
+                status: "completed",
+                notes: "Member VIP"
+            },
+            {
+                id: "TRX-20230616-002",
+                date: "2023-06-16T14:20:00",
+                customer: "Customer 5",
+                contact: "08567890123",
+                cashier: "John Doe",
+                items: [
+                    { productId: 1, name: "Espresso", price: 3.50, quantity: 1 },
+                    { productId: 4, name: "Cappuccino", price: 4.80, quantity: 2 },
+                    { productId: 9, name: "Caramel Macchiato", price: 5.50, quantity: 1 }
+                ],
+                subtotal: 18.60,
+                tax: 1.86,
+                discount: 0,
+                total: 20.46,
+                status: "cancelled",
+                notes: "Pelanggan membatalkan pesanan"
+            }
+        ];
+
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = 5;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTransactionTable();
+            updatePagination();
+            
+            // Search functionality
+            document.getElementById('searchTransaction').addEventListener('input', function() {
+                currentPage = 1;
+                renderTransactionTable();
+                updatePagination();
+            });
+            
+            // Filter functionality
+            document.getElementById('filterStatus').addEventListener('change', function() {
+                currentPage = 1;
+                renderTransactionTable();
+                updatePagination();
+            });
+            
+            // Pagination buttons
+            document.getElementById('prevPage').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTransactionTable();
+                    updatePagination();
+                }
+            });
+            
+            document.getElementById('nextPage').addEventListener('click', function() {
+                const totalPages = Math.ceil(getFilteredTransactions().length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTransactionTable();
+                    updatePagination();
+                }
+            });
+        });
+
+        // Get filtered transactions based on search and status filter
+        function getFilteredTransactions() {
+            const searchTerm = document.getElementById('searchTransaction').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value;
+            
+            return transactions.filter(transaction => {
+                const matchesSearch = 
+                    transaction.id.toLowerCase().includes(searchTerm) ||
+                    transaction.customer.toLowerCase().includes(searchTerm) ||
+                    transaction.cashier.toLowerCase().includes(searchTerm);
+                
+                const matchesStatus = statusFilter === 'all' || transaction.status === statusFilter;
+                
+                return matchesSearch && matchesStatus;
+            });
+        }
+
+        // Render transaction table
+        function renderTransactionTable() {
+            const tableBody = document.getElementById('transactionTableBody');
+            tableBody.innerHTML = '';
+            
+            const filteredTransactions = getFilteredTransactions();
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedTransactions = filteredTransactions.slice(startIndex, startIndex + itemsPerPage);
+            
+            if (paginatedTransactions.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="8" class="px-3 py-4 text-center text-sm text-gray-500">
+                        Tidak ada transaksi yang ditemukan
+                    </td>
+                `;
+                tableBody.appendChild(row);
+                return;
+            }
+            
+            paginatedTransactions.forEach((transaction, index) => {
+                const row = document.createElement('tr');
+                row.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
+                
+                // Format date
+                const transactionDate = new Date(transaction.date);
+                const formattedDate = transactionDate.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                // Count total items
+                const totalItems = transaction.items.reduce((sum, item) => sum + item.quantity, 0);
+                
+                // Status badge
+                let statusBadge = '';
+                if (transaction.status === 'completed') {
+                    statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Selesai</span>';
+                } else if (transaction.status === 'pending') {
+                    statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>';
+                } else {
+                    statusBadge = '<span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Dibatalkan</span>';
+                }
+                
+                row.innerHTML = `
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${startIndex + index + 1}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${transaction.id}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${formattedDate}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${transaction.customer}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${totalItems} item(s)</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$${transaction.total.toFixed(2)}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm">${statusBadge}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="showTransactionDetail('${transaction.id}')" class="text-[#8B5E3C] hover:text-orange-900 mr-3">
+                            <i class="fas fa-eye"></i> Detail
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Update pagination information
+        function updatePagination() {
+            const filteredTransactions = getFilteredTransactions();
+            const totalItems = filteredTransactions.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            const startItem = (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+            
+            document.getElementById('startItem').textContent = startItem;
+            document.getElementById('endItem').textContent = endItem;
+            document.getElementById('totalItems').textContent = totalItems;
+            
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+        }
+
+        // Show transaction detail modal
+        function showTransactionDetail(transactionId) {
+            const transaction = transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+            
+            // Format date
+            const transactionDate = new Date(transaction.date);
+            const formattedDate = transactionDate.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Set transaction info
+            document.getElementById('detailId').textContent = transaction.id;
+            document.getElementById('detailDate').textContent = formattedDate;
+            document.getElementById('detailCashier').textContent = transaction.cashier;
+            document.getElementById('detailCustomer').textContent = transaction.customer;
+            document.getElementById('detailContact').textContent = transaction.contact;
+            document.getElementById('detailNotes').textContent = transaction.notes || '-';
+            
+            // Set status badge
+            const statusBadge = document.getElementById('detailStatus');
+            statusBadge.className = 'px-2 py-1 text-xs rounded-full';
+            if (transaction.status === 'completed') {
+                statusBadge.className += ' bg-green-100 text-green-800';
+                statusBadge.textContent = 'Selesai';
+            } else if (transaction.status === 'pending') {
+                statusBadge.className += ' bg-yellow-100 text-yellow-800';
+                statusBadge.textContent = 'Pending';
+            } else {
+                statusBadge.className += ' bg-red-100 text-red-800';
+                statusBadge.textContent = 'Dibatalkan';
+            }
+            
+            // Set transaction items
+            const itemsBody = document.getElementById('transactionItemsBody');
+            itemsBody.innerHTML = '';
+            
+            transaction.items.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">${item.name}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">$${item.price.toFixed(2)}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item.quantity}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">$${(item.price * item.quantity).toFixed(2)}</td>
+                `;
+                itemsBody.appendChild(row);
+            });
+            
+            // Set totals
+            document.getElementById('detailSubtotal').textContent = `$${transaction.subtotal.toFixed(2)}`;
+            document.getElementById('detailTax').textContent = `$${transaction.tax.toFixed(2)}`;
+            document.getElementById('detailDiscount').textContent = `$${transaction.discount.toFixed(2)}`;
+            document.getElementById('detailTotal').textContent = `$${transaction.total.toFixed(2)}`;
+            
+            // Show/hide action buttons based on status
+            const completeBtn = document.getElementById('completeTransactionBtn');
+            const cancelBtn = document.getElementById('cancelTransactionBtn');
+            
+            if (transaction.status === 'pending') {
+                completeBtn.classList.remove('hidden');
+                cancelBtn.classList.remove('hidden');
+                
+                completeBtn.onclick = function() { updateTransactionStatus(transactionId, 'completed'); };
+                cancelBtn.onclick = function() { updateTransactionStatus(transactionId, 'cancelled'); };
+            } else {
+                completeBtn.classList.add('hidden');
+                cancelBtn.classList.add('hidden');
+            }
+            
+            // Print receipt button
+            document.getElementById('printReceiptBtn').onclick = function() {
+                alert(`Struk untuk transaksi ${transaction.id} akan dicetak!`);
+                // In a real app, this would open a print dialog or generate a PDF
+            };
+            
+            // Show modal
+            document.getElementById('transactionDetailModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Hide transaction detail modal
+        function hideTransactionDetailModal() {
+            document.getElementById('transactionDetailModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // Update transaction status
+        function updateTransactionStatus(transactionId, newStatus) {
+            const transactionIndex = transactions.findIndex(t => t.id === transactionId);
+            if (transactionIndex === -1) return;
+            
+            transactions[transactionIndex].status = newStatus;
+            
+            // Show success message
+            alert(`Status transaksi berhasil diubah menjadi ${newStatus === 'completed' ? 'Selesai' : 'Dibatalkan'}`);
+            
+            // Refresh the table and hide modal
+            renderTransactionTable();
+            hideTransactionDetailModal();
+        }
+    </script>
+</body>
+</html>
