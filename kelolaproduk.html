@@ -10,13 +10,13 @@
 <body class="bg-gray-100">
     <!-- Header -->
     <header class="bg-[#8B5E3C] text-white shadow-md">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Coffee Shop</h1>
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold mb-4 md:mb-0">Coffee Shop</h1>
             <nav>
-                <ul class="flex space-x-6">
-                    <li><a href="dashboard.html" class="hover:text-orange-200">Beranda</a></li>
-                    <li><a href="kelolaproduk.html" class="font-semibold underline">Kelola Produk</a></li>
-                    <li><a href="receipt.html" class="hover:text-orange-200">Struk</a></li>
+                <ul class="flex flex-wrap justify-center space-x-2 md:space-x-6">
+                    <li><a href="dashboard.html" class="hover:text-orange-200 px-2 py-1 md:px-0 md:py-0">Beranda</a></li>
+                    <li><a href="kelolaproduk.html" class="font-semibold underline px-2 py-1 md:px-0 md:py-0">Kelola Produk</a></li>
+                    <li><a href="receipt.html" class="hover:text-orange-200 px-2 py-1 md:px-0 md:py-0">Struk</a></li>
                 </ul>
             </nav>
         </div>
@@ -24,24 +24,24 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-8">
-        <div class="flex justify-between items-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-800">Kelola Stok Produk</h2>
-            <button onclick="showAddProductModal()" class="bg-[#8B5E3C] hover:bg-orange-900 text-white px-4 py-2 rounded-md flex items-center">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Kelola Stok Produk</h2>
+            <button onclick="showAddProductModal()" class="bg-[#8B5E3C] hover:bg-orange-900 text-white px-4 py-2 rounded-md flex items-center w-full md:w-auto justify-center">
                 <i class="fas fa-plus mr-2"></i> Tambah Produk Baru
             </button>
         </div>
 
         <!-- Product Table -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="bg-white rounded-lg shadow overflow-hidden overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Produk</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
+                        <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="productTableBody" class="bg-white divide-y divide-gray-200">
@@ -52,8 +52,8 @@
     </main>
 
     <!-- Add Product Modal -->
-    <div id="addProductModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+    <div id="addProductModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-2">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-gray-800">Tambah Produk Baru</h3>
                 <button onclick="hideAddProductModal()" class="text-gray-500 hover:text-gray-700">
@@ -63,19 +63,19 @@
             <form id="addProductForm" class="space-y-4">
                 <div>
                     <label for="productName" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                    <input type="text" id="productName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                    <input type="text" id="productName" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50 p-2">
                 </div>
                 <div>
                     <label for="productPrice" class="block text-sm font-medium text-gray-700">Harga</label>
-                    <input type="number" id="productPrice" min="0" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                    <input type="number" id="productPrice" min="0" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50 p-2">
                 </div>
                 <div>
                     <label for="productStock" class="block text-sm font-medium text-gray-700">Stok Awal</label>
-                    <input type="number" id="productStock" min="0" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                    <input type="number" id="productStock" min="0" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50 p-2">
                 </div>
                 <div>
                     <label for="productImage" class="block text-sm font-medium text-gray-700">URL Gambar</label>
-                    <input type="text" id="productImage" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                    <input type="text" id="productImage" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50 p-2">
                 </div>
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="hideAddProductModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Batal</button>
@@ -86,8 +86,8 @@
     </div>
 
     <!-- Edit Stock Modal -->
-    <div id="editStockModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+    <div id="editStockModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-2">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-gray-800">Edit Stok Produk</h3>
                 <button onclick="hideEditStockModal()" class="text-gray-500 hover:text-gray-700">
@@ -98,18 +98,18 @@
                 <input type="hidden" id="editProductId">
                 <div>
                     <label for="editProductName" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                    <input type="text" id="editProductName" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100">
+                    <input type="text" id="editProductName" readonly class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 p-2">
                 </div>
                 <div>
                     <label for="editStockAction" class="block text-sm font-medium text-gray-700">Aksi</label>
-                    <select id="editStockAction" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                    <select id="editStockAction" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50 p-2">
                         <option value="add">Tambah Stok</option>
                         <option value="reduce">Kurangi Stok</option>
                     </select>
                 </div>
                 <div>
                     <label for="editStockAmount" class="block text-sm font-medium text-gray-700">Jumlah</label>
-                    <input type="number" id="editStockAmount" min="1" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50">
+                    <input type="number" id="editStockAmount" min="1" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8B5E3C] focus:ring focus:ring-[#8B5E3C] focus:ring-opacity-50 p-2">
                 </div>
                 <div class="flex justify-end space-x-3">
                     <button type="button" onclick="hideEditStockModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">Batal</button>
@@ -160,20 +160,22 @@
                 row.className = index % 2 === 0 ? 'bg-white' : 'bg-gray-50';
                 
                 row.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${index + 1}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${index + 1}</td>
+                    <td class="px-3 py-4 whitespace-nowrap">
                         <img src="${product.image}" alt="${product.name}" class="h-10 w-10 rounded-full object-cover">
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${product.name}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$${product.price.toFixed(2)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${product.stock}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button onclick="showEditStockModal(${product.id})" class="text-[#8B5E3C] hover:text-orange-900 mr-3">
-                            <i class="fas fa-edit"></i> Edit Stok
-                        </button>
-                        <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">
-                            <i class="fas fa-trash"></i> Hapus
-                        </button>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${product.name}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">$${product.price.toFixed(2)}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${product.stock}</td>
+                    <td class="px-3 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button onclick="showEditStockModal(${product.id})" class="text-[#8B5E3C] hover:text-orange-900 whitespace-nowrap">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900 whitespace-nowrap">
+                                <i class="fas fa-trash"></i> Hapus
+                            </button>
+                        </div>
                     </td>
                 `;
                 
@@ -184,11 +186,13 @@
         // Show add product modal
         function showAddProductModal() {
             document.getElementById('addProductModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
         }
 
         // Hide add product modal
         function hideAddProductModal() {
             document.getElementById('addProductModal').classList.add('hidden');
+            document.body.style.overflow = ''; // Re-enable scrolling
             document.getElementById('addProductForm').reset();
         }
 
@@ -225,11 +229,13 @@
             document.getElementById('editStockAmount').value = '';
             
             document.getElementById('editStockModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
         }
 
         // Hide edit stock modal
         function hideEditStockModal() {
             document.getElementById('editStockModal').classList.add('hidden');
+            document.body.style.overflow = ''; // Re-enable scrolling
             document.getElementById('editStockForm').reset();
         }
 
